@@ -1,0 +1,33 @@
+#define init
+global.sprChaosPipe = sprite_add_weapon("Weapon-Sprites/sprPipe.png",3,2);
+#define weapon_name
+return "CHAOS Pipe";
+#define weapon_type
+return 0;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 0;
+#define weapon_load
+return 50;
+#define weapon_sprt
+return global.sprChaosPipe;
+#define weapon_area
+return 50;
+#define weapon_swap
+return sndSwapHammer;
+#define weapon_text
+return "ancient old hammer. although heavy";
+#define weapon_fire
+sound_play(sndHammer);
+instance_create(x, y, Dust);
+
+mod_script_call("mod", "Chaos Slash", "obj_ChaosHammerSlash", 	
+	x + lengthdir_x(skill_get(17) * 15, other.gunangle), 
+	y + lengthdir_y(skill_get(17) * 15, other.gunangle), 
+	other.gunangle, 
+	2 + 2 * skill_get(17));
+
+wepangle = -wepangle;
+motion_add(other.gunangle, 6);
+weapon_post(-4, 12, 1);

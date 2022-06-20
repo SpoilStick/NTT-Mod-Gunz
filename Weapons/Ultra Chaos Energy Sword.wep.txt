@@ -1,0 +1,35 @@
+#define init
+global.sprUltraChaosEnergySword = sprite_add_weapon("Weapon-Sprites/sprUltraChaosEnergySword.png",4,6);
+#define weapon_name
+return "ULTRA CHAOS ENERGY SWORD";
+#define weapon_type
+return 5;
+#define weapon_melee
+return true;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 4;
+#define weapon_load
+return 12;
+#define weapon_sprt
+return global.sprUltraChaosEnergySword;
+#define weapon_area
+return 32;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "zzzwwoonggg";
+#define weapon_rads
+return 8
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndEnergySwordUpg);
+} else sound_play(sndEnergySword);
+instance_create(x, y, Dust);
+
+mod_script_call("mod", "Ultra Chaos Energy Slash", "obj_UltraChaosEnergySlash", x + lengthdir_x(20 * skill_get(13), other.gunangle), y + lengthdir_y(20 * skill_get(13), other.gunangle), other.gunangle + (random(2)-1) * other.accuracy, 2 + 3 * skill_get(13))
+
+wepangle = -wepangle;
+motion_add(other.gunangle, 7);
+weapon_post(-4, 24, 1);

@@ -1,0 +1,62 @@
+#define init
+global.sprChaosSlash = sprite_add("Sprites/sprChaosSlash.png",4,24,24);
+global.sprChaosTrail = sprite_add("Sprites/sprChaosTrail.png", 3, 4, 4);
+
+#define obj_ChaosSwordSlash(_x, _y, _d, _s)
+with instance_create(_x, _y, Slash) {
+	name = "Chaos Sword Slash";
+	damage = 10;
+	
+	motion_add(_d,_s);
+	team = other.team;
+	image_angle = direction;
+	
+	image_speed *= 1.25
+	sprite_index = global.sprChaosSlash;
+	
+	script_bind_end_step(scr_sword_post, depth).creator = self;
+}
+
+#define obj_ChaosHammerSlash(_x, _y, _d, _s)
+with instance_create(_x, _y, Slash) {
+	name = "Chaos Hammer Slash";
+	damage = 48;
+	
+	motion_add(_d,_s);
+	team = other.team;
+	image_angle = direction;
+	
+	image_speed *= 0.5
+	sprite_index = global.sprChaosSlash;
+	
+	script_bind_end_step(scr_hammer_post, depth).creator = self;
+}
+
+#define scr_sword_post
+var _creator = creator;
+if (instance_exists(_creator)) {
+	with (_creator) if (!place_meeting(x, y, hitme)) exit;
+	var _origin = _creator.creator;
+	var _team = _creator.team;
+	var _angle = (instance_is(_origin, Player) ? _origin.gunangle : _creator.image_angle);
+	//
+	with (instances_matching(hitme, "nexthurt", current_frame + 6))
+	if (team != _team && place_meeting(x, y, _creator)) {
+		if random(2) < 1
+		mod_script_call("mod", "Chaos Wisp", "obj_ChaosWisp", x, y, random(359), 5 + random(10))
+	}
+} else instance_destroy();
+
+#define scr_hammer_post
+var _creator = creator;
+if (instance_exists(_creator)) {
+	with (_creator) if (!place_meeting(x, y, hitme)) exit;
+	var _origin = _creator.creator;
+	var _team = _creator.team;
+	var _angle = (instance_is(_origin, Player) ? _origin.gunangle : _creator.image_angle);
+	//
+	with (instances_matching(hitme, "nexthurt", current_frame + 6))
+	if (team != _team && place_meeting(x, y, _creator)) {
+		mod_script_call("mod", "Large Chaos Wisp", "obj_LargeChaosWisp", x, y, random(359), 5 + random(8))
+	}
+} else instance_destroy();

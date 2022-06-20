@@ -1,0 +1,41 @@
+#define init
+global.sprTester = sprite_add_weapon("Weapon-Sprites/sprTester.png",0,0);
+#define weapon_name
+return "TESTER";
+#define weapon_type
+return 0;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 0;
+#define weapon_load
+return 1;
+#define weapon_sprt
+return global.sprTester;
+#define weapon_area
+return -1;
+#define weapon_swap
+return sndSwapPistol;
+#define weapon_text
+return "TEST";
+#define weapon_fire
+sound_play(sndPistol);
+
+var __angle = gunangle;
+var _spd = 6;
+
+with (instance_create(x, y, Bullet1)) {
+	motion_add(__angle, _spd);
+	image_angle = direction;
+	team = other.team;
+	creator = other;
+}
+with (instance_create(x, y, PlasmaBig)) {
+	direction = __angle
+	image_angle = direction;
+	team = other.team;
+	creator = other;
+}
+
+#define scr_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale * 4, image_yscale * 4, image_angle, image_blend, 1.0);

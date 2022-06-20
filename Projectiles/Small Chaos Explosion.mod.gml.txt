@@ -1,0 +1,15 @@
+#define init
+global.sprSmallChaosExplosion = sprite_add("Sprites/sprSmallChaosExplosion.png",7,12,12);
+
+#define obj_SmallChaosExplosion(_x, _y)
+with instance_create(_x, _y, SmallExplosion) {
+	name = "Small Chaos Explosion";
+	damage += skill_get(17) * 1;
+	team = 2;
+	creator = other;
+	image_angle = random(359);
+	
+	mask_index = mskSmallExplosion
+	sprite_index = global.sprSmallChaosExplosion;
+}
+sound_play_pitchvol(sndExplosionS,0.2 + random(1.8), 0.5 + random(0.5));

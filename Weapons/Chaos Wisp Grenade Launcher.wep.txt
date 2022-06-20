@@ -1,0 +1,26 @@
+#define init
+global.sprChaosWispGrenadeLauncher = sprite_add_weapon("Weapon-Sprites/sprChaosWispGrenadeLauncher.png",5,4);
+#define weapon_name
+return "CHAOS WISP GRENADE LAUCNHER";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 5;
+#define weapon_load
+return 44;
+#define weapon_sprt
+return global.sprChaosWispGrenadeLauncher;
+#define weapon_area
+return 5;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "compact w i s p s";
+#define weapon_fire
+sound_play(sndGrenade);
+
+mod_script_call("mod", "Chaos Wisp Grenade", "obj_ChaosWispGrenade", x, y, other.gunangle + (random(2)-1) * other.accuracy, 9 + random(1))
+
+weapon_post(5, -10, 2);

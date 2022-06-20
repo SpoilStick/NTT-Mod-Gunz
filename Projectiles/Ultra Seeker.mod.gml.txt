@@ -1,0 +1,103 @@
+#define init
+global.sprUltraSeeker = sprite_add("Sprites/sprUltraSeeker.png", 2, 8, 8);
+
+#define obj_UltraSeeker(_x, _y, _d, _s)
+with(instance_create(x, y, CustomProjectile)) {
+	name = "Ultra Seeker";
+	mask_index = mskSeeker;
+	damage = 9;
+	force = 6;
+	typ = 2;
+	
+	motion_add(_d, _s);
+	team = other.team;
+	creator = other.id;
+	image_angle = direction;
+	
+	image_speed = 0.4;
+	sprite_index = global.sprUltraSeeker;
+	
+	ammo = 2;
+	_b = 1;
+	_h = 3;
+	
+	on_anim = scr_anim;
+	on_step = scr_step;
+	on_hit = scr_hit;
+	on_wall = scr_wall;
+	on_draw = scr_draw;
+	on_destroy = scr_destroy;
+}
+#define scr_anim
+image_speed = 0;
+image_index = 1;
+
+#define scr_draw
+draw_self();
+
+#define scr_step
+target=instance_nearest(x,y,enemy)
+if target>0
+{
+    if !collision_line(x,y,target.x,target.y,Wall,1,1)
+	{
+		var targetdir, targetdist, changedir;
+		targetdir=point_direction(x,y,target.x,target.y)
+		targetdist=1.5*max(3,point_distance(x,y,target.x,target.y))+(0.02*power(abs(angle_difference(direction,targetdir)),1.25))
+		if instance_exists(Player)
+		{
+			if skill_get(21) {targetdist/=2}
+		}
+		changedir=clamp(angle_difference(direction,targetdir),-360/targetdist,360/targetdist)
+		direction-=changedir;
+	}
+}
+direction+=3-random(6)
+image_angle=direction
+
+with instance_create(x,y,BoltTrail){
+	image_angle = other.direction
+	image_xscale = other.speed
+}
+
+#define scr_hit
+if(projectile_canhit(other))
+{
+	projectile_hit(other, damage, force, direction);
+	sticktarget = other.id
+    if other.my_health > 0 {
+		_h -= 1;
+	}
+	if _h <= 0 {
+        with instance_create(x,y,BoltStick)
+		{
+            sprite_index = global.sprUltraSeeker
+            image_angle = other.image_angle
+            target = other.sticktarget
+        }
+		instance_destroy()
+    }
+}
+
+#define scr_destroy
+sound_play(sndBoltHitWall)
+
+#define scr_wall
+if _b > 0 {
+	move_bounce_solid(true)
+	_b -= 1;
+}
+if _b <= 0 {
+	move_bounce_solid(false)
+	if ammo>0{
+		ammo-=1
+		with other{
+			instance_create(x,y,FloorExplo);
+			instance_destroy();
+		}
+	}
+	else{
+		instance_create(x,y,Dust);
+		instance_destroy();
+	}
+}

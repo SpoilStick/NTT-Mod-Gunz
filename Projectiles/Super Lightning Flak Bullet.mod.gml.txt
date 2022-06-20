@@ -1,0 +1,81 @@
+#define init
+global.sprSuperLightningFlakBullet = sprite_add("Sprites/sprSuperLightningFlakBullet.png", 2, 12, 12);
+
+
+#define obj_SuperLightningFlakBullet(_x,_y, _d, _s)
+with instance_create(_x, _y, CustomProjectile) {
+	name = "Super Lightning Flak Bullet";
+	mask_index = mskBullet2;
+	damage = 95;
+	
+	motion_add(_d,_s);
+	team = other.team;
+	creator = other;
+	image_angle = direction;
+	
+	sprite_index = global.sprSuperLightningFlakBullet;
+	
+	scale = 0;
+	
+	on_step = scr_step;
+	on_draw = scr_draw;
+	on_destroy = scr_destroy;
+}
+
+#define scr_step
+if place_meeting(x,y,hitme){
+	with instance_nearest(x,y,hitme) if team != other.team{
+		my_health -= other.damage
+		sprite_index = spr_hurt
+		sound_play(snd_hurt)
+	}
+}
+if (speed > 2) {
+	speed /= 1.1
+}
+else {
+	instance_destroy();
+}
+
+if instance_exists(self) {
+	if random(3) < 1 {
+		with instance_create(x, y, Smoke) {
+			motion_add(359, random(3));
+		}
+	}
+	if random(3) < 1 {
+		with instance_create(x,y,Lightning){
+			image_angle = random(360)
+			creator = other.creator
+			team = other.team
+			ammo = 3
+			alarm0 = 1
+			visible = 0
+			with instance_create(x,y,LightningSpawn)
+			{
+			   image_angle = other.image_angle
+			}
+			sound_play_pitchvol(sndLightningPistol, 0.1 + random(0.9), 0.1 + random(0.4))
+		}
+	}
+}
+
+#define scr_draw
+scale = choose(0.95,1.05);
+image_xscale = scale;
+image_yscale = scale;
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 2 * image_xscale, 2 * image_yscale, image_angle, make_colour_rgb(31, 114, 255), 0.25);
+draw_set_blend_mode(bm_normal);
+
+#define scr_destroy
+sound_play_pitchvol(sndLightningPistol, 0.9, 1.1)
+sound_play_pitchvol(sndSuperFlakExplode, 0.9, 1.1)
+
+for (var i = random_range(-71, 0); i < 360; i += 72) {
+	mod_script_call("mod", "Lightning Flak Bullet", "obj_LightningFlakBullet", x, y, i, 12)
+}
+repeat(6) with instance_create(x, y, Smoke) {
+	motion_add(359, random(3));
+}

@@ -1,0 +1,58 @@
+#define init
+global.sprChaosBullet = sprite_add("Sprites/sprChaosBullet.png",2,8,8);
+global.sprChaosBulletHit = sprite_add("Sprites/sprChaosBulletHit.png",4,8,8);
+global.sprChaosTrail = sprite_add("Sprites/sprChaosTrail.png", 3, 4, 4);
+
+#define obj_ChaosBullet(_x,_y, _d, _s)
+with instance_create(_x, _y, CustomProjectile) {
+	name = "Chaos Bullet";
+	mask_index = mskBullet1;
+	damage = 10 + (6 * skill_get(17));
+	
+	motion_add(_d,_s);
+	team = other.team;
+	creator = other;
+	image_angle = direction;
+	
+	sprite_index = global.sprChaosBullet;
+	
+	on_step = scr_step;
+	on_draw = scr_draw;
+	on_destroy = scr_destroy;
+}
+
+#define scr_step
+if image_index = 1 image_speed = 0;
+
+if random(3)<1
+with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaTrail) sprite_index = global.sprChaosTrail;
+
+if speed > 18
+speed = 18;
+else speed *= 1.01;
+
+if instance_exists(enemy) {
+	target = instance_nearest(x,y,enemy);
+	if target != 0 var target_dir = point_direction(x,y,target.x,target.y);
+	if !collision_line(x,y,target.x,target.y,Wall,1,1) {
+		if (target_dir > direction mod 360){
+			direction += 4+random(4);
+		}
+		if (target_dir <= direction mod 360){
+			direction -= 4+random(4);
+		}
+	}
+}
+else target = 0;
+
+direction += random(8)-4;
+image_angle = direction;
+
+#define scr_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, (2 + (skill_get(17) * 0.5)) * image_xscale, (2 + (skill_get(17) * 0.5)) * image_yscale, image_angle, make_colour_hsv(245, 225, 255), 0.15 + (skill_get(17) * 0.1));
+draw_set_blend_mode(bm_normal);
+
+#define scr_destroy
+mod_script_call("mod", "Chaos Explosion", "obj_ChaosExplosion", x, y);

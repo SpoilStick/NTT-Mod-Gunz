@@ -1,0 +1,90 @@
+#define init
+global.sprChaosLaser = sprite_add("Sprites/sprChaosLaser.png",1,2,3);
+global.sprChaosLaserOther = sprite_add("Sprites/sprChaosLaserOther.png",1,2,3);
+global.sprChaosLaserStart = sprite_add("Sprites/sprChaosLaserStart.png", 8, 8, 6);
+global.sprChaosLaserEnd = sprite_add("Sprites/sprChaosLaserEnd.png", 8, 10, 8);
+
+#define obj_ChaosLaser(_x, _y, _d, _scale, _b)
+with instance_create(_x - lengthdir_x(2, _d + 180), _y - lengthdir_y(2, _d + 180), CustomProjectile) {
+	name = "ChaosLaser"
+	mask_index = mskLaser;
+	damage = 2;
+	
+	alarm0 = 2;
+	force = 4;
+	_bounce = _b;
+	
+	direction = _d + 180;
+	image_angle = direction;
+	team = other.team;
+	creator = other;
+	
+	sprite_index = global.sprChaosLaser;
+	
+	__scale = _scale;
+	image_yscale = _scale
+	if (skill_get(17)) image_yscale = _scale + 0.75
+	
+	on_hit = script_ref_create(scr_hit);
+	on_draw = script_ref_create(scr_draw);
+	on_step = script_ref_create(scr_step);
+	on_wall = script_ref_create(scr_wall);
+	
+	img = 0
+}
+
+#define scr_extend
+var dir, newx, newy;
+dir = 0
+if image_yscale>0 do {x -= lengthdir_x(2,image_angle); y -= lengthdir_y(2,image_angle); dir += 1}
+until ((place_meeting(x,y,hitme) and dir > 16) or place_meeting(x,y,Wall) or dir > 160)
+
+alarm0 = 2
+
+image_xscale = image_xscale+point_distance(x,y,xstart,ystart)/2
+x=xstart
+y=ystart
+
+instance_create(x-lengthdir_x(image_xscale*2,image_angle),y-lengthdir_y(image_xscale*2,image_angle),Smoke)
+
+#define scr_step
+image_yscale -= (0.225 - skill_get(17) * 0.075);
+if image_yscale < 0 {
+instance_destroy();
+exit;
+}
+
+img += 0.5;
+
+//alarms
+alarm0 -= 1
+if alarm0 = 0 {
+	scr_extend()
+}
+
+#define scr_hit
+if projectile_canhit(other) {
+	if random(10 - (5 * skill_get(17))) < 1 {
+		mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", other.x, other.y);
+	}
+	projectile_hit(other,damage,force,image_angle+180)
+	instance_create(other.x,other.y,Smoke)
+}
+
+#define scr_draw
+draw_sprite_ext(sprite_index, -1, x, y, image_xscale, image_yscale, image_angle, c_white, 1)
+draw_sprite_ext(global.sprChaosLaserOther, -1, x, y, image_xscale, 3, image_angle, c_white, 0.15)
+
+draw_sprite_ext(global.sprChaosLaserStart, img, xstart, ystart, 1, 1, image_angle + 180, c_white, 1)
+draw_sprite_ext(global.sprChaosLaserStart, img, xstart, ystart, 3, 3, image_angle + 180, c_white, 0.25)
+
+draw_sprite_ext(global.sprChaosLaserEnd, img, x - lengthdir_x(image_xscale * 2, image_angle), y - lengthdir_y(image_xscale * 2, image_angle), 1, 1, image_angle + 180, c_white, 1)
+draw_sprite_ext(global.sprChaosLaserEnd, img, x - lengthdir_x(image_xscale * 2, image_angle), y - lengthdir_y(image_xscale * 2, image_angle), 3, 3, image_angle + 180, c_white, 0.25)
+
+#define scr_wall
+if "bounce_" not in self {
+	if _bounce > 1 {
+		obj_ChaosLaser(x-lengthdir_x(image_xscale*2,image_angle),y-lengthdir_y(image_xscale*2,image_angle), 180 - image_angle, __scale, _bounce - 1)
+	}
+	bounce_ = 1
+}

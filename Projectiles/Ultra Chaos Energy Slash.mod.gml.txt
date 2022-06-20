@@ -1,0 +1,39 @@
+#define init
+global.sprUltraChaosEnergySlash = sprite_add("Sprites/sprUltraChaosEnergySlash.png",3, -8, 24);
+
+#define obj_UltraChaosEnergySlash(_x, _y, _d, _s)
+with (instance_create(_x, _y, EnergySlash)) {
+	motion_add(_d, _s);
+	image_angle = direction;
+	team = other.team;
+	creator = other;
+	damage += 15;
+	image_speed /= 1.25;
+
+	sprite_index = global.sprUltraChaosEnergySlash;
+	
+	script_bind_end_step(scr_sword_post, depth).creator = self;
+}
+
+#define scr_sword_post
+var _creator = creator;
+if (instance_exists(_creator)) {
+	with (_creator) if (!place_meeting(x, y, hitme)) exit;
+	var _origin = _creator.creator;
+	var _team = _creator.team;
+	var _angle = (instance_is(_origin, Player) ? _origin.gunangle : _creator.image_angle);
+	//
+	with (instances_matching(hitme, "nexthurt", current_frame + 6))
+	if (team != _team && place_meeting(x, y, _creator)) {
+		repeat(random(2)) {
+			if random(2) < 1 {
+				mod_script_call("mod", "Large Chaos Wisp", "obj_LargeChaosWisp", x, y, random(359), 5 + random(10))
+			}
+			repeat(random(2)) {
+				repeat(random(2)) {
+					mod_script_call("mod", "Chaos Wisp", "obj_ChaosWisp", x, y, random(359), 5 + random(10))
+				}
+			}
+		}
+	}
+} else instance_destroy();

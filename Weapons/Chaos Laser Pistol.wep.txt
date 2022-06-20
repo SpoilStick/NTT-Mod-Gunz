@@ -1,0 +1,29 @@
+#define init
+global.sprChaosLaserPistol = sprite_add_weapon("Weapon-Sprites/sprChaosLaserPistol.png",0,2);
+#define weapon_name
+return "CHAOS LASER BLASTER";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 2;
+#define weapon_load
+return 15;
+#define weapon_sprt
+return global.sprChaosLaserPistol;
+#define weapon_area
+return 8;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "chaotic";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndLaserUpg);
+} 
+else sound_play(sndLaser);
+
+mod_script_call("mod", "Chaos Laser", "obj_ChaosLaser", x, y, other.gunangle + (random(2) - 1) * other.accuracy, 2.0, 0)
+
+weapon_post(2, -3, 2);

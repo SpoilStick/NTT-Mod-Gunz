@@ -1,0 +1,29 @@
+#define init
+global.sprChaosMinigun = sprite_add_weapon("Weapon-Sprites/sprChaosMinigun.png",5,7);
+#define weapon_name
+return "CHAOS MINIGUN";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 1;
+#define weapon_cost
+return 2;
+#define weapon_load
+return 4;
+#define weapon_sprt
+return global.sprChaosMinigun;
+#define weapon_area
+return 11;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "fabeled old ... blaster?";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndPlasmaUpg);
+} else sound_play(sndPlasma);
+
+mod_script_call("mod", "Chaos Bullet", "obj_ChaosBullet", x, y, other.gunangle + (random(24)-12) * other.accuracy, 6 + random(3))
+
+motion_add(other.gunangle + 180, 1.5);
+weapon_post(5, -3, 3);

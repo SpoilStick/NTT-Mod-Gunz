@@ -1,0 +1,51 @@
+//Projectiles
+/loadmod Projectiles/Chaos Big
+/loadmod Projectiles/Chaos Bullet
+/loadmod Projectiles/Chaos Energy Slash
+/loadmod Projectiles/Chaos Explosion
+/loadmod Projectiles/Chaos Huge
+/loadmod Projectiles/Chaos Laser
+/loadmod Projectiles/Chaos Mega
+/loadmod Projectiles/Chaos Plasma
+/loadmod Projectiles/Chaos Slash
+/loadmod Projectiles/Chaos Wisp
+/loadmod Projectiles/Chaos Wisp Grenade
+/loadmod Projectiles/Large Chaos Wisp
+/loadmod Projectiles/Lightning Flak Bullet
+/loadmod Projectiles/Lightning Shell
+/loadmod Projectiles/Small Chaos Explosion
+/loadmod Projectiles/Super Lightning Flak Bullet
+/loadmod Projectiles/Ultra Chaos Energy Slash
+/loadmod Projectiles/Ultra Seeker
+
+//Weapons
+/loadwep Weapons/Bouncer Chaos Laser Minigun
+/loadwep Weapons/Bouncer Chaos Laser Pistol
+/loadwep Weapons/Bouncer Chaos Laser Rifle
+/loadwep Weapons/Chaos Blaster
+/loadwep Weapons/Chaos Cannon
+/loadwep Weapons/Chaos Energy Sword
+/loadwep Weapons/Chaos Laser Minigun
+/loadwep Weapons/Chaos Laser Pistol
+/loadwep Weapons/Chaos Laser Rifle
+/loadwep Weapons/Chaos Minigun
+/loadwep Weapons/Chaos Pipe
+/loadwep Weapons/Chaos Plasma Gun
+/loadwep Weapons/Chaos Shotgun
+/loadwep Weapons/Chaos Sword
+/loadwep Weapons/Chaos Wisp Grenade Launcher
+/loadwep Weapons/Chaos Wisp Gun
+/loadwep Weapons/Chaos Wisp Rifle
+/loadwep Weapons/Lightning Flak Cannon
+/loadwep Weapons/Mega Chaos Cannon
+/loadwep Weapons/Super Chaos Cannon
+/loadwep Weapons/Super Lightning Flak Cannon
+/loadwep Weapons/Rare Pipe
+/loadwep Weapons/Ultra Bouncer Chaos Laser Pistol
+/loadwep Weapons/Ultra Chaos Energy Sword
+/loadwep Weapons/Ultra Chaos Laser Pistol
+/loadwep Weapons/Ultra Seeker Pistol
+/loadwep Weapons/Ultra Seeker Shotgun
+
+/loadwep Weapons/Tester
+/loadmod More Chests

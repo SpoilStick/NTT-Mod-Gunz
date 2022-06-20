@@ -1,0 +1,32 @@
+#define init
+global.sprUltraBouncerChaosLaserPistol = sprite_add_weapon("Weapon-Sprites/sprUltraBouncerChaosLaserPistol.png",4,4);
+#define weapon_name
+return "ULTRA BOUNCER CHAOS LASER PISTOL";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 8;
+#define weapon_load
+return 11;
+#define weapon_sprt
+return global.sprUltraBouncerChaosLaserPistol;
+#define weapon_area
+return 33;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "spread chaos";
+#define weapon_rads
+return 32
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndLaserUpg);
+} 
+else sound_play(sndLaser);
+
+for (var i = -24; i <= 24; i += 12) {
+	mod_script_call("mod", "Chaos Laser", "obj_ChaosLaser", x, y, other.gunangle + random(2) - 1 + i * other.accuracy, 2.0, 3)
+}
+weapon_post(9, -20, 12);

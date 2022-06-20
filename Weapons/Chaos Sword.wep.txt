@@ -1,0 +1,33 @@
+#define init
+global.sprChaosSword = sprite_add_weapon("Weapon-Sprites/sprChaosSword.png",5,3);
+#define weapon_name
+return "CHAOS SWORD";
+#define weapon_type
+return 0;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 0;
+#define weapon_load
+return 32;
+#define weapon_sprt
+return global.sprChaosSword;
+#define weapon_area
+return 30;
+#define weapon_swap
+return sndSwapSword;
+#define weapon_text
+return "yer lucky";
+#define weapon_fire
+sound_play(sndHammer);
+instance_create(x, y, Dust);
+move_contact_solid(other.gunangle, 5);
+
+mod_script_call("mod", "Chaos Slash", "obj_ChaosSwordSlash", 	
+	x + lengthdir_x(5 + skill_get(17) * 25, other.gunangle), 
+	y + lengthdir_y(5 + skill_get(17) * 25, other.gunangle), 
+	other.gunangle, 
+	2.25 + 3.25 * skill_get(17));
+
+wepangle = -wepangle;
+weapon_post(-6, 9, 2);

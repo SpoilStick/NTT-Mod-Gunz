@@ -1,0 +1,29 @@
+#define init
+global.sprChaosWispGun = sprite_add_weapon("Weapon-Sprites/sprChaosWispGun.png",5,5);
+#define weapon_name
+return "CHAOS WISP GUN";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 1;
+#define weapon_load
+return 9;
+#define weapon_sprt
+return global.sprChaosWispGun;
+#define weapon_area
+return 6;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "Wispsspspspspspsp";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndPlasmaUpg);
+} else sound_play(sndPlasma);
+
+repeat(3)
+mod_script_call("mod", "Chaos Wisp", "obj_ChaosWisp", x, y, other.gunangle + (random(30)-15) * other.accuracy, 4 + random(7))
+
+weapon_post(2, -3, 2);

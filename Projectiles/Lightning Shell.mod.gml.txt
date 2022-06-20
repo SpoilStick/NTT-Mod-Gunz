@@ -1,0 +1,100 @@
+#define init
+global.sprLightningShell = sprite_add("Sprites/sprLightningShell.png", 2, 8, 8);
+global.sprLightningShellDisappear = sprite_add("Sprites/sprLightningShellDisappear.png", 5, 8, 8);
+
+#define obj_LightningShell(_x,_y, _d, _s)
+with instance_create(_x, _y, CustomProjectile) {
+	name = "Lightning Shell";
+	mask_index = mskBullet2;
+	damage = 5;
+	
+	motion_add(_d,_s);
+	team = other.team;
+	creator = other;
+	image_angle = direction;
+	
+	sprite_index = global.sprLightningShell;
+	
+	friction = .6
+	recycle_amount = 0
+	wallbounce = 3 * (skill_get(15) + skill_get(17))
+	
+	on_step = scr_step;
+	on_draw = scr_draw;
+	on_destroy = scr_destroy;
+}
+
+#define scr_step
+if image_index >= 1{
+	image_speed = 0
+}
+if place_meeting(x + hspeed, y, Wall){
+	hspeed /= -1.1
+	if speed + wallbounce >= 22{
+	speed = 22
+	}
+	else{
+		speed += wallbounce
+	}
+	wallbounce /= 1.04
+	instance_create(x,y,Dust)
+	sound_play(sndShotgunHitWall)
+	image_angle = direction
+}
+if place_meeting(x, y + vspeed, Wall){
+	vspeed /= -1.1
+	if speed + wallbounce >= 22{
+	speed = 22
+	}
+	else{
+		speed += wallbounce
+	}
+	wallbounce /= 1.04
+	instance_create(x,y,Dust)
+	sound_play(sndShotgunHitWall)
+	image_angle = direction
+}
+if place_meeting(x + hspeed, y + vspeed, Wall){
+	direction += 180
+	speed /= 1.1
+	if speed + wallbounce >= 22{
+	speed = 22
+	}
+	else{
+		speed += wallbounce
+	}
+	wallbounce /= 1.04
+	instance_create(x,y,Dust)
+	sound_play(sndShotgunHitWall)
+	image_angle = direction
+}
+if speed < 2{
+	instance_destroy()
+}
+
+#define scr_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 3*image_xscale, 3*image_yscale, image_angle, image_blend, 0.15);
+draw_set_blend_mode(bm_normal);
+
+#define scr_destroy
+with instance_create(x,y,BulletHit){
+	sprite_index = global.sprLightningShellDisappear
+	speed = other.speed/5
+	direction = other.direction
+	image_angle = direction
+}
+with instance_create(x,y,Lightning){
+	image_angle = random(360)
+	creator = other.creator
+	team = other.team
+	ammo = 7
+	alarm0 = 1
+	visible = 0
+	with instance_create(x,y,LightningSpawn)
+	{
+	   image_angle = other.image_angle
+	}
+	sound_play_pitchvol(sndLightningPistol, 0.1 + random(0.9), 0.2 + random(1.2))
+}

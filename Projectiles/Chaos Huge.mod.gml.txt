@@ -1,0 +1,65 @@
+#define init
+global.sprChaosHuge = sprite_add("Sprites/sprChaosHuge.png",2,24,24);
+global.sprChaosTrail = sprite_add("Sprites/sprChaosTrail.png", 3, 4, 4);
+
+#define obj_ChaosHuge(_x, _y, _d, _s)
+with instance_create(_x, _y, CustomProjectile) {
+	name = "Chaos Huge";
+	mask_index = mskPlasma;
+	damage = 37;
+	force = 12;
+	typ = 1
+	
+	motion_add(_d,_s);
+	team = other.team;
+	creator = other;
+	image_angle = direction;
+	
+	image_speed = 0.5;
+	sprite_index = global.sprChaosHuge;
+	
+	on_step = scr_step;
+	on_draw = scr_draw;
+	on_anim = scr_anim
+	on_wall = scr_wall
+	on_hit = scr_hit
+	on_destroy = scr_destroy;
+}
+
+#define scr_step
+if image_xscale < 0.5 instance_destroy();
+
+if instance_exists(self) {
+	repeat(1) {
+		with instance_create(x+random_range(-16, 16),y+random_range(-16, 16),PlasmaTrail) sprite_index = global.sprChaosTrail;
+	}
+}
+
+#define scr_draw
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale * 2, image_yscale * 2, image_angle, image_blend, image_alpha * 0.1);
+draw_set_blend_mode(bm_normal);
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, c_white, 1);
+
+#define scr_anim
+image_speed = 0;
+image_index = 1;
+
+#define scr_wall
+instance_destroy();
+
+#define scr_hit
+projectile_hit(other,damage,force);
+image_xscale -= 0.1;
+image_yscale -= 0.1;
+
+#define scr_destroy
+sound_play_pitchvol(sndPlasmaBigExplodeUpg,0.5,2);
+for (i = 0; i < 360; i += 60)
+{
+  instance_create(x+lengthdir_x(15,i),y+lengthdir_y(15,i),PortalClear);
+}
+mod_script_call("mod", "Chaos Explosion", "obj_ChaosExplosion", x, y);
+for (var i = random(90); i < 450; i += 90) {
+	mod_script_call("mod", "Chaos Big", "obj_ChaosBig", x, y, i, 5)
+}

@@ -1,0 +1,83 @@
+#define init
+global.sprChaosWispGrenade = sprite_add("Sprites/sprChaosWispGrenade.png",1,2,2);
+
+#define obj_ChaosWispGrenade(_x,_y, _d, _s)
+with instance_create(_x, _y, CustomProjectile) {
+	name = "Chaos Wisp Grenade";
+	mask_index = sprGrenade;
+	damage = 3
+	
+	motion_add(_d,_s);
+	team = other.team;
+	creator = other;
+	image_angle = direction;
+	friction = 0.1
+	alarm1 = 6
+	alarm0 = 45
+	
+	sprite_index = global.sprChaosWispGrenade;
+	
+	on_step = scr_step;
+	on_wall = scr_wall;
+	on_hit = scr_hit;
+	on_destroy = scr_destroy;
+}
+
+#define scr_step
+if place_meeting(x,y,Explosion) {instance_destroy(); exit}
+with instances_matching(projectile, "object_index", Slash, GuitarSlash, BloodSlash, EnergySlash, EnergyHammerSlash, LightningSlash, EnemySlash) {
+	if place_meeting(x,y,other)
+	with other {
+		direction = other.direction
+		speed = 12
+		friction = 0.1
+		alarm1 = 6
+		sleep(40)
+		view_shake_at(x, y, 3);
+		with instance_create(x,y,Deflect) {
+			image_angle = other.direction
+		}
+	}
+}
+with instances_matching(projectile,"object_index",Shank,EnergyShank) {
+	with other {
+		sleep(40)
+		view_shake_at(x, y, 3);
+		instance_destroy()
+	}
+}
+
+//alarms
+alarm1-=1
+if alarm1=0 {
+	friction = 0.4
+	
+	if visible = 1 repeat(4) {
+		with instance_create(x,y,Smoke)
+		motion_add(random(360),random(2))
+	}
+}
+alarm0-=1
+if alarm0<=0 instance_destroy()
+
+#define scr_wall
+sound_play_hit(sndGrenadeHitWall,0.1)
+move_bounce_solid(true)
+speed *= 0.6
+instance_create(x,y,Dust)
+
+#define scr_hit
+if projectile_canhit(other) and speed > 2  {
+	projectile_hit(other, max(1, round(speed / 4)), 8, direction);
+}
+
+#define scr_destroy
+repeat(16)
+mod_script_call("mod", "Chaos Wisp", "obj_ChaosWisp", x, y, random(359), 5 + random(10))
+
+var ang = random(359);
+mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", x + lengthdir_x(20, ang), y + lengthdir_y(20, ang));
+mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", x + lengthdir_x(20, ang + 72), y + lengthdir_y(20, ang + 72));
+mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", x + lengthdir_x(20, ang + 144), y + lengthdir_y(20, ang + 144));
+mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", x + lengthdir_x(20, ang + 216), y + lengthdir_y(20, ang + 216));
+mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", x + lengthdir_x(20, ang + 288), y + lengthdir_y(20, ang + 288));

@@ -1,0 +1,29 @@
+#define init
+global.sprChaosPlasmaGun = sprite_add_weapon("Weapon-Sprites/sprChaosPlasmaGun.png",3, 4);
+#define weapon_name
+return "CHAOS PLASMA GUN";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 3;
+#define weapon_load
+return 24;
+#define weapon_sprt
+return global.sprChaosPlasmaGun;
+#define weapon_area
+return 15;
+#define weapon_swap
+return sndSwapPistol;
+#define weapon_text
+return "fabeled old ... plasma gun?";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndPlasmaUpg);
+} else sound_play(sndPlasma);
+
+mod_script_call("mod", "Chaos Plasma", "obj_ChaosPlasma", x, y, other.gunangle + (random(16)-8) * other.accuracy, 6)
+
+motion_add(other.gunangle + 180, 1.5);
+weapon_post(5, -3, 3);

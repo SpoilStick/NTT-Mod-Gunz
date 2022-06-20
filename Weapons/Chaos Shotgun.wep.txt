@@ -1,0 +1,30 @@
+#define init
+global.sprChaosShotgun = sprite_add_weapon("Weapon-Sprites/sprChaosShotgun.png",-1,5);
+#define weapon_name
+return "CHAOS SHOTGUN";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 6;
+#define weapon_load
+return 36;
+#define weapon_sprt
+return global.sprChaosShotgun;
+#define weapon_area
+return 11;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "this is too strong";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndPlasmaUpg);
+} else sound_play(sndPlasma);
+
+repeat(7) {
+	mod_script_call("mod", "Chaos Bullet", "obj_ChaosBullet", x, y, other.gunangle + (random(56)-28) * other.accuracy, 6 + random(3))
+}
+
+weapon_post(6, -12, 8);

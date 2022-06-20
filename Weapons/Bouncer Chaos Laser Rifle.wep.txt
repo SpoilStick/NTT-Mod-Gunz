@@ -1,0 +1,28 @@
+#define init
+global.sprBouncerChaosLaserRifle = sprite_add_weapon("Weapon-Sprites/sprBouncerChaosLaserRifle.png",3,3);
+#define weapon_name
+return "BOUNCER CHAOS LASER RIFLE";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 1;
+#define weapon_cost
+return 3;
+#define weapon_load
+return 11;
+#define weapon_sprt
+return global.sprBouncerChaosLaserRifle;
+#define weapon_area
+return 22;
+#define weapon_swap
+return sndSwapEnergy;
+#define weapon_text
+return "speedy chaos";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndLaserUpg);
+} else sound_play(sndLaser);
+
+mod_script_call("mod", "Chaos Laser", "obj_ChaosLaser", x, y, other.gunangle + (random(8) - 4) * other.accuracy, 2.0, 3)
+
+weapon_post(5, -3, 2);

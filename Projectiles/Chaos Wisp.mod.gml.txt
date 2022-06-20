@@ -1,0 +1,95 @@
+#define init
+global.sprChaosWisp = sprite_add("Sprites/sprChaosWisp.png",1,3,2);
+global.sprChaosTrail = sprite_add("Sprites/sprChaosTrail.png", 3, 4, 4);
+
+#define obj_ChaosWisp(_x,_y, _d, _s)
+with instance_create(_x, _y, CustomObject) {
+	name = "Chaos Wisp";
+	
+	motion_add(_d, _s);
+	team = other.team;
+	creator = other;
+	image_angle = direction;
+	
+	sprite_index = global.sprChaosWisp;
+	
+	on_draw = scr_draw;
+	on_destroy = scr_destroy;
+	
+	if instance_exists(self)
+	wait(4) 
+	on_step = scr_step;
+}
+
+#define scr_step
+if image_index = 1 image_speed = 0;
+
+if random(4)<1
+with instance_create(x+random_range(-8,8),y+random_range(-8,8),PlasmaTrail) sprite_index = global.sprChaosTrail;
+
+speed /= 1 + random(2) * 0.01
+
+if speed < 3 instance_destroy()
+
+if instance_exists(enemy) {
+	if instance_exists(self) {
+		target = instance_nearest(x, y, enemy);
+		if target != 0 var target_dir = point_direction(x,y,target.x,target.y);
+		if distance_to_object(target) < 90 {
+			if (target_dir > direction mod 360){
+				direction += 32 - (16 / speed);
+			}
+			if (target_dir <= direction mod 360){
+				direction -= 32 - (16 / speed);
+			}
+			speed /= 1 + random(2) * 0.01;
+			
+			if distance_to_object(target) < 45 {
+				speed /= 1 + random(2) * 0.01;
+				
+				if distance_to_object(target) < 22.5 {
+					speed /= 1 + random(2) * 0.01;
+					
+					if distance_to_object(target) < 11.25 {
+						speed /= 1 + random(2) * 0.01;
+						
+						if distance_to_object(target) < 5.625 {
+							speed /= 1 + random(2) * 0.01;
+						}
+					}
+				}
+			}
+		}
+		else {
+			if instance_exists(self) {
+				direction += (random(32) - 16) ;
+				image_angle = direction
+				wait(1)
+			}
+		}
+	}
+}
+else {
+	if instance_exists(self) {
+		target = 0;
+		
+		if instance_exists(self) {
+			direction += random(32) - 16;
+			image_angle = direction
+			wait(1)
+		}
+	}
+}
+
+if instance_exists(self)
+image_angle = direction
+
+#define scr_draw
+draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, 1.0);
+draw_set_blend_mode(bm_add);
+draw_sprite_ext(sprite_index, image_index, x, y, 3 * image_xscale, 3 * image_yscale, image_angle, make_colour_hsv(230, 25, 255), 0.075);
+draw_sprite_ext(sprite_index, image_index, x, y, 5 * image_xscale, 5 * image_yscale, image_angle, make_colour_hsv(240, 15, 255), 0.025);
+draw_set_blend_mode(bm_normal);
+
+#define scr_destroy
+mod_script_call("mod", "Small Chaos Explosion", "obj_SmallChaosExplosion", x, y);

@@ -1,0 +1,29 @@
+#define init
+global.sprUltraSeekerShotgun = sprite_add_weapon("Weapon-Sprites/sprUltraSeekerShotgun.png",2,3);
+#define weapon_name
+return "ULTRA SEEKER SHOTGUN";
+#define weapon_type
+return 3;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 6;
+#define weapon_load
+return 48;
+#define weapon_sprt
+return global.sprUltraSeekerShotgun;
+#define weapon_area
+return 42;
+#define weapon_swap
+return sndSwapBow;
+#define weapon_text
+return "green dorito shotgun";
+#define weapon_rads
+return 42
+#define weapon_fire
+sound_play(sndSeekerPistol);
+
+for (var d = -45; d <= 45; d += 15) {
+	mod_script_call("mod", "Ultra Seeker", "obj_UltraSeeker", x, y, other.gunangle + random(12) - 6 - d * other.accuracy, 5.6)
+}
+weapon_post(-7, -30, 8);

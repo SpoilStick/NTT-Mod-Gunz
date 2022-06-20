@@ -1,0 +1,26 @@
+#define init
+global.sprSuperLightningFlakCannon = sprite_add_weapon("Weapon-Sprites/sprSuperLightningFlakCannon.png",3,3);
+#define weapon_name
+return "SUPER LIGHTNING FLAK CANNON";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 8;
+#define weapon_load
+return 64;
+#define weapon_sprt
+return global.sprSuperLightningFlakCannon;
+#define weapon_area
+return 32;
+#define weapon_swap
+return sndSwapExplosive;
+#define weapon_text
+return "20/10 Must Use Again";
+#define weapon_fire
+sound_play_pitchvol(sndSuperFlakCannon, 0.5, 1.0);
+
+mod_script_call("mod", "Super Lightning Flak Bullet", "obj_SuperLightningFlakBullet", x, y, other.gunangle + (random(10)-5) * other.accuracy, 11 + random(2))
+
+weapon_post(7, -32, 4);

@@ -1,0 +1,29 @@
+#define init
+global.sprMegaChaosCannon = sprite_add_weapon("Weapon-Sprites/sprMegaChaosCannon.png",8,10);
+#define weapon_name
+return "MEGA CHAOS CANNON";
+#define weapon_type
+return 5;
+#define weapon_auto
+return 0;
+#define weapon_cost
+return 72;
+#define weapon_load
+return 1400;
+#define weapon_sprt
+return global.sprMegaChaosCannon;
+#define weapon_area
+return 50;
+#define weapon_swap
+return sndSwapPistol;
+#define weapon_text
+return "fabeled old ... cannon?";
+#define weapon_fire
+if (skill_get(17)) {
+	sound_play(sndPlasmaBigUpg);
+} else sound_play(sndPlasmaBig);
+
+mod_script_call("mod", "Chaos Mega", "obj_ChaosMega", x, y, other.gunangle + (random(8)-4) * other.accuracy, 3)
+
+motion_add(other.gunangle + 180, 8);
+weapon_post(8, -8, 16);
